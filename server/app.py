@@ -18,9 +18,18 @@ api = Api(app)
 
 CORS(app, supports_credentials=True)  # set up cors
 
-@app.route('/', methods=['GET'])
-def get_all_runs():
-    pass
+@app.route('/runs/<int:id>', methods=['GET'])
+def get_all_runs(id):
+    try:
+        runner = Runner.query.filter(Runner.id == id).first()
+        runs = []
+        for run in runner.runs:
+            run_dict = run.to_dict()
+            runs.append(run_dict)
+        return make_response(jsonify(runs), 200)
+    except Exception as e:
+        print(f"Error fetching runs: {str(e)}")
+        return make_response(jsonify({'error': 'Failed to fetch runs'}), 500)
 
 @app.before_first_request
 def create_tables():
