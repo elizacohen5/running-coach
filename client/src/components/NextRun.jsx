@@ -6,7 +6,12 @@ import Typography from "@mui/material/Typography";
 import { Button, CardActionArea, CardActions } from "@mui/material";
 import Box from "@mui/material/Box";
 
-export default function NextRun() {
+export default function NextRun({ userRuns }) {
+
+  const sortedRuns = userRuns.sort((a, b) => a.run_date - b.run_date)
+  const nextRun = sortedRuns[0]
+  const nextRunPace = nextRun.pace
+
   return (
     <Box   display="flex" justifyContent="center">
       <Card
@@ -32,10 +37,10 @@ export default function NextRun() {
               Next Run:
             </Typography>
             <Typography variant="body1" color="white">
-              Total Miles: 12
+              Total Miles: {nextRun.distance}
             </Typography>
             <Typography variant="body1" color="white">
-              Pace: Long Run
+              Pace: {nextRunPace[0].toUpperCase() + nextRunPace.slice(1)}
             </Typography>
           </CardContent>
         </CardActionArea>
