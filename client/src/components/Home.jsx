@@ -1,6 +1,12 @@
+import Countdown from "./Countdown";
+import NextRun from "./NextRun";
+
 function Home() {
     return (
-        <h2>This will be the dashboard</h2>
+        <>
+            <Countdown />
+            <NextRun />
+        </>
     )
 }
 
