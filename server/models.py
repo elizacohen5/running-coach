@@ -9,9 +9,9 @@ class Runner(db.Model, SerializerMixin):
     __tablename__ = 'runners'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    username = db.Column(db.String)
-    password = db.Column(db.String)
+    name = db.Column(db.String(150))
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(150), nullable=False)
 
     runs = db.relationship('FutureRuns', back_populates='runner')
 
