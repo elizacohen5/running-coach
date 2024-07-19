@@ -8,12 +8,20 @@ import Box from "@mui/material/Box";
 
 export default function NextRun({ userRuns }) {
 
-  const sortedRuns = userRuns.sort((a, b) => a.run_date - b.run_date)
-  const nextRun = sortedRuns[0]
-  const nextRunPace = nextRun.pace
+  
+  if (!userRuns || userRuns.length === 0) {
+    return <p>Loading...</p>;
+  }
+
+    const sortedRuns = userRuns.sort((a, b) => a.run_date - b.run_date);
+    // console.log("sorted runs: ", sortedRuns)
+    const nextRun = sortedRuns[0];
+    // console.log("next run: ", nextRun)
+    const nextRunPace = nextRun["pace"];
+    // console.log("next run pace: ", nextRunPace)
 
   return (
-    <Box   display="flex" justifyContent="center">
+    <Box display="flex" justifyContent="center">
       <Card
         sx={{
           width: "100vw",

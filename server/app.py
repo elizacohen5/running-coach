@@ -72,7 +72,7 @@ def dashboard():
     except Exception as e:
         print(e)
         return jsonify({"message": "Token is invalid!"}), 401
-    return jsonify({"message": f"Welcome to your dashboard, {current_user.name}!"})
+    return jsonify({"user": {"id": current_user.id, "name": current_user.name, "username": current_user.username}})
 
 
 @app.before_first_request

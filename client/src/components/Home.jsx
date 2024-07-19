@@ -5,16 +5,8 @@ import NextRun from "./NextRun";
 function Home() {
 
     const [userRuns, setUserRuns] = useState([])
+    const [user, setUser] = useState(null)
     const [message, setMessage] = useState('');
-
-    useEffect(() => {
-        fetch("http://127.0.0.1:5555/runs/1")
-        .then((r) => r.json())
-        .then((runsArray) => {
-            setUserRuns(runsArray)
-        })
-        .catch((err) => console.log(err))
-    }, [])
 
     useEffect(() => {
         const fetchData = async() => {
@@ -25,13 +17,36 @@ function Home() {
                 }
             });
             const data = await response.json();
-            setMessage(data.message)
+            if (data.user) {
+                // console.log("User data fetched:", data.user)
+                setUser(data.user);
+            } else {
+                setMessage(data.message)
+            }
         };
         fetchData();
     }, [])
 
+    useEffect(() => {
+        if (user) {
+        // console.log("Fetching runs for", user)
+        fetch(`http://127.0.0.1:5555/runs/${user.id}`)
+        .then((r) => r.json())
+        .then((runsArray) => {
+            // console.log("Runs fetched: ", runsArray)
+            setUserRuns(runsArray)
+        })
+        .catch((err) => console.log(err))
+        }
+    }, [user]) // re-fetch runs depending on the user state
+
+    if (!user) {
+        return <p>Loading...</p>;
+    }
+
     return (
         <>
+            <p>Welcome, {user.name} </p>
             <p>{message}</p>
             <Countdown />
             <NextRun userRuns={userRuns} />
