@@ -2,6 +2,7 @@ import App from "./App"
 import Home from "./components/Home"
 import Login from "./components/Login"
 import Signup from "./components/Signup"
+import NewPlan from "./components/CreatePlan/NewPlan"
 import { Navigate } from "react-router-dom"
 
 
@@ -35,6 +36,10 @@ const routes = [
             {
                 path: "/login",
                 element: <Login />
+            },
+            {
+                path: "/new-plan",
+                element: <NewPlan />
             }
         ]
     }
