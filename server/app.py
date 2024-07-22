@@ -4,11 +4,11 @@ from flask_restful import Api, Resource
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
-import datetime
+from datetime import datetime
 
 
 
-from models import db, Runner, FutureRuns
+from models import db, Runner, FutureRuns, CurrentConditioning, PersonalRecords, RunnerGoals
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -59,6 +59,88 @@ def signup():
     db.session.commit()
     return jsonify({"message": "Runner registered successfully"})
 
+@app.route('/current_conditioning', methods=['POST'])
+def current_conditioning():
+    data = request.get_json()
+    existing_record = CurrentConditioning.query.filter_by(runner_id=data['runnerId']).first()
+
+    if existing_record:
+        existing_record.runner_age = data['runnerAge']
+        existing_record.years_running = data['yearsRunning']
+        existing_record.current_weekly_miles = data['currentWeeklyMiles']
+        db.session.commit()
+        return jsonify({"message": "Current Conditioning updated successfully"})
+    else:
+        new_record = CurrentConditioning(runner_id=data['runnerId'], 
+                                               runner_age=data['runnerAge'], 
+                                               years_running=data['yearsRunning'], 
+                                               current_weekly_miles=data['currentWeeklyMiles']
+                                               )
+    db.session.add(new_record)
+    db.session.commit()
+    return jsonify({"message": "Current Conditioning added successfully"})
+
+@app.route('/personal_records', methods=['POST'])
+def personal_records():
+    data = request.get_json()
+    existing_record = PersonalRecords.query.filter_by(runner_id=data['runnerId']).first()
+
+    if existing_record:
+        existing_record.five_k_record=data['fivekRecord']
+        existing_record.ten_k_record=data['tenkRecord']
+        existing_record.half_marathon_record=data['halfMarathonRecord']
+        existing_record.marathon_record=data['marathonRecord']
+        db.session.commit()
+        return jsonify({"message": "Personal Records updated successfully"})
+    else:
+        new_record = PersonalRecords(runner_id=data['runnerId'], 
+                                       five_k_record=data['fivekRecord'], 
+                                       ten_k_record=data['tenkRecord'], 
+                                       half_marathon_record=data['halfMarathonRecord'], 
+                                       marathon_record=data['marathonRecord']
+                                       )
+    db.session.add(new_record)
+    db.session.commit()
+    return jsonify({"message": "Personal Records added successfully"})
+
+@app.route('/runner_goals', methods=['POST'])
+def runner_goals():
+    data = request.get_json()
+
+    race_date_str = data.get('raceDate', None)
+    race_date = None
+    if race_date_str:
+        try: 
+            race_date = datetime.strptime(race_date_str, '%Y-%m-%d').date()
+        except Exception as e:
+            print(f"Error fetching runs: {str(e)}")
+            return jsonify({"error": "Invalid date format"}), 400
+
+    existing_record = RunnerGoals.query.filter_by(runner_id=data['runnerId']).first()
+
+    if existing_record:
+        existing_record.race_training=data['raceTraining']
+        existing_record.base_building=data['baseBuilding']
+        existing_record.weekly_mileage=data['weeklyMileage']
+        existing_record.weekly_sessions=data['weeklySessions']
+        existing_record.weight_training=data['weightTraining']
+        existing_record.cross_training=data['crossTraining']
+        existing_record.race_date=race_date
+        db.session.commit()
+        return jsonify({"message": "Runner Goals updated successfully"})
+    else:
+        new_record = RunnerGoals(runner_id=data['runnerId'], 
+                               race_training=data['raceTraining'], 
+                               base_building=data['baseBuilding'], 
+                               weekly_mileage=data['weeklyMileage'], 
+                               weekly_sessions=data['weeklySessions'], 
+                               weight_training=data['weightTraining'], 
+                               cross_training=data['crossTraining'], 
+                               race_date=race_date
+                               )
+    db.session.add(new_record)
+    db.session.commit()
+    return jsonify({"message": "Runner Goals added successfully"})
 
 
 @app.route('/home', methods=['GET'])
