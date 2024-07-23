@@ -5,9 +5,9 @@ from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from datetime import datetime
-
-
-
+from dotenv import load_dotenv
+import os
+import openai
 from models import db, Runner, FutureRuns, CurrentConditioning, PersonalRecords, RunnerGoals
 
 app = Flask(__name__)
@@ -16,12 +16,68 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.json.compact = False
 
+# Set up openai key 
+load_dotenv()
+openai.api_key = os.getenv('OPENAI_API_KEY')
+
 migrate = Migrate(app, db)
 db.init_app(app)
 
 api = Api(app)
 
 CORS(app, supports_credentials=True)  # set up cors
+
+# Function to create training plan prompt
+def generate_training_plan_prompt(runner):
+    runner_age = runner.current_conditioning[0].runner_age
+    years_running = runner.current_conditioning[0].years_running
+    current_weekly_miles = runner.current_conditioning[0].current_weekly_miles
+    five_k_record = runner.personal_records[0].five_k_record
+    ten_k_record = runner.personal_records[0].ten_k_record
+    half_marathon_record = runner.personal_records[0].half_marathon_record
+    marathon_record = runner.personal_records[0].marathon_record
+    race_training = "train for a race" if runner.runner_goals[0].race_training else "increase mileage"
+    race = runner.runner_goals[0].race
+    race_date = runner.runner_goals[0].race_date
+    weekly_sessions = runner.runner_goals[0].weekly_sessions
+    weight_training = "weight training" if runner.runner_goals[0].weight_training else "cross training"
+
+    prompt = f"""
+    I am {runner_age} years old and I have been running for {years_running} years. 
+    I currently run about {current_weekly_miles} miles weekly. 
+    My 5k record is {five_k_record} minutes, my 10k record is {ten_k_record} minutes, 
+    my half marathon record is {half_marathon_record} minutes, and my marathon record is {marathon_record} minutes. 
+    I would like to {race_training}. The race will be a {race} on {race_date}. 
+    I would like to begin my plan at {current_weekly_miles + 5} miles weekly and increase mileage. 
+    I would like to run {weekly_sessions} days per week. I would also like to incorporate {weight_training}. 
+    Can you create a training plan for me? In this plan, also include a “Notes” section. 
+    In the "Notes" section I would like to know more specifics on how to run tempo runs, intervals, 
+    long runs, and optimize {weight_training}.
+    """
+
+    return prompt
+
+#Function to generate openai training plan 
+def get_training_plan(runner):
+    prompt = generate_training_plan_prompt(runner)
+
+    response = openai.chat.completions.create(model="gpt-4o-mini",
+    messages=[
+        {"role": "system", "content": "You are a running expert and coach who creates personalized race training plans."},
+        {"role": "user", "content": prompt}
+    ],
+    max_tokens=2050)
+
+    return response.choices[0].message.content.strip()
+
+@app.route('/get-training-plan/<int:runner_id>', methods=['GET'])
+def fetch_training_plan(runner_id):
+    runner = Runner.query.get(runner_id)
+    if not runner:
+        return jsonify({"error": "Runner not found"}), 404
+
+    training_plan = get_training_plan(runner)
+    return jsonify({"training_plan": training_plan})
 
 @app.route('/runs/<int:id>', methods=['GET'])
 def get_all_runs(id):
@@ -35,7 +91,7 @@ def get_all_runs(id):
     except Exception as e:
         print(f"Error fetching runs: {str(e)}")
         return make_response(jsonify({'error': 'Failed to fetch runs'}), 500)
-    
+
 
 @app.route('/login', methods=['POST'])
 def login():
