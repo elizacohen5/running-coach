@@ -6,6 +6,8 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 import { useUser } from "../UserContext";
 
 function GoalsForm({ onFormDataChange }) {
@@ -18,6 +20,7 @@ function GoalsForm({ onFormDataChange }) {
   const [weightTraining, setWeightTraining] = useState(false);
   const [crossTraining, setCrossTraining] = useState(false);
   const [raceDate, setRaceDate] = useState("");
+  const [race, setRace] = useState("");
 
   useEffect(() => {
     if (user) {
@@ -35,6 +38,7 @@ function GoalsForm({ onFormDataChange }) {
       weightTraining,
       crossTraining,
       raceDate,
+      race,
     };
     onFormDataChange(formData);
   }, [
@@ -46,6 +50,7 @@ function GoalsForm({ onFormDataChange }) {
     weightTraining,
     crossTraining,
     raceDate,
+    race,
     onFormDataChange,
   ]);
 
@@ -67,6 +72,10 @@ function GoalsForm({ onFormDataChange }) {
 
   const handleRaceDateChange = (e) => {
     setRaceDate(e.target.value);
+  };
+
+  const handleRaceChange = (e) => {
+    setRace(e.target.value);
   };
 
   return (
@@ -93,6 +102,29 @@ function GoalsForm({ onFormDataChange }) {
           label="Build a base"
         />
       </RadioGroup>
+
+      {raceTraining && (
+        <>
+          <Typography fontWeight="bold" color="black">
+            Please select a race
+          </Typography>
+          <Select
+            value={race}
+            onChange={handleRaceChange}
+            displayEmpty
+            sx={{ width: "75%", backgroundColor: "white" }}
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value="5k">5k</MenuItem>
+            <MenuItem value="10k">10k</MenuItem>
+            <MenuItem value="half marathon">Half Marathon</MenuItem>
+            <MenuItem value="marathon">Marathon</MenuItem>
+          </Select>
+        </>
+      )}
+
       <TextField
         label="How many miles would you like to run weekly?"
         sx={{ width: "75%", backgroundColor: "white" }}

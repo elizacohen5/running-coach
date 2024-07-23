@@ -66,6 +66,7 @@ class RunnerGoals(db.Model, SerializerMixin):
      weight_training = db.Column(db.Boolean)
      cross_training = db.Column(db.Boolean)
      race_date = db.Column(db.Date)
+     race = db.Column(db.String)
 
      runner = db.relationship('Runner', back_populates='runner_goals')
      serialize_rules=['-runner.runner_goals']

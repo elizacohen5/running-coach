@@ -126,6 +126,7 @@ def runner_goals():
         existing_record.weight_training=data['weightTraining']
         existing_record.cross_training=data['crossTraining']
         existing_record.race_date=race_date
+        existing_record.race=data['race']
         db.session.commit()
         return jsonify({"message": "Runner Goals updated successfully"})
     else:
@@ -136,7 +137,8 @@ def runner_goals():
                                weekly_sessions=data['weeklySessions'], 
                                weight_training=data['weightTraining'], 
                                cross_training=data['crossTraining'], 
-                               race_date=race_date
+                               race_date=race_date,
+                               race=data['race'], 
                                )
     db.session.add(new_record)
     db.session.commit()

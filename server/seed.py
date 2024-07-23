@@ -7,6 +7,9 @@ from models import db, Runner, FutureRuns, CurrentConditioning, PersonalRecords,
 def run():
     # Runner.query.delete()
     FutureRuns.query.delete()
+    CurrentConditioning.query.delete()
+    PersonalRecords.query.delete()
+    RunnerGoals.query.delete()
     db.session.commit()
 
     # runners = [
@@ -37,9 +40,9 @@ def run():
     db.session.commit()
 
     runner_goals = [
-        RunnerGoals(runner_id=1, race_training=False, base_building=True, weekly_mileage=25, weekly_sessions=4, weight_training=True, cross_training=False, race_date=date(2025, 1, 1)),
-        RunnerGoals(runner_id=2, race_training=True, base_building=True, weekly_mileage=30, weekly_sessions=5, weight_training=False, cross_training=True, race_date=date(2024, 10, 10)),
-        RunnerGoals(runner_id=3, race_training=True, base_building=False, weekly_mileage=60, weekly_sessions=6, weight_training=True, cross_training=False, race_date=date(2024, 8, 31))
+        RunnerGoals(runner_id=1, race_training=False, base_building=True, weekly_mileage=25, weekly_sessions=4, weight_training=True, cross_training=False, race_date=date(2025, 1, 1), race='5k'),
+        RunnerGoals(runner_id=2, race_training=True, base_building=True, weekly_mileage=30, weekly_sessions=5, weight_training=False, cross_training=True, race_date=date(2024, 10, 10), race='10k'),
+        RunnerGoals(runner_id=3, race_training=True, base_building=False, weekly_mileage=60, weekly_sessions=6, weight_training=True, cross_training=False, race_date=date(2024, 8, 31), race='Marathon')
     ]
 
     db.session.add_all(runner_goals)
