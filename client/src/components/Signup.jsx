@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import { useNavigate } from 'react-router-dom';
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -48,11 +49,16 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
   const classes = useStyles();
+  const navigate = useNavigate()
 
   const [name, setName] = useState('');
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
+
+  const goToLogIn = () => {
+    navigate('/login')
+  }
 
   const handleSignup = async(e) => {
     e.preventDefault();
@@ -70,6 +76,7 @@ export default function SignUp() {
         });
         const data = await response.json();
         setMessage(data.message);
+        goToLogIn()
     } catch (error) {
         setMessage('Error registering user')
     }
@@ -134,15 +141,18 @@ export default function SignUp() {
               />
             </Grid>
           </Grid>
+          
           <Button
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
+            // onClick={goToLogIn}
           >
             Sign Up
           </Button>
+         
           <Grid container justifyContent="flex-end">
             <Grid item>
               <Link href="#" variant="body2">

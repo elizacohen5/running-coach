@@ -19,7 +19,7 @@ function Copyright() {
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
       <NavLink color="inherit" to="https://material-ui.com/">
-        Your Website
+        OptiRun
       </NavLink>{" "}
       {new Date().getFullYear()}
       {"."}
