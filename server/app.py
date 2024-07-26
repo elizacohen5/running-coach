@@ -4,13 +4,12 @@ from flask_restful import Api, Resource
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import os
 import openai
-# import json
-# import ast
-from models import db, Runner, CurrentConditioning, PersonalRecords, RunnerGoals, Runs, PlanOverview
+import json
+from models import db, Runner, CurrentConditioning, PersonalRecords, RunnerGoals, Runs
 from prompt_template import openai_prompt
 
 app = Flask(__name__)
@@ -40,17 +39,20 @@ def generate_training_plan_prompt(runner):
     ten_k_record = runner.personal_records[0].ten_k_record
     half_marathon_record = runner.personal_records[0].half_marathon_record
     marathon_record = runner.personal_records[0].marathon_record
-    race_training = "train for a race" if runner.runner_goals[0].race_training else "increase mileage"
     race = runner.runner_goals[0].race
     race_date = runner.runner_goals[0].race_date
+    race_training = f"I am training for a race. The race will be a {race} on {race_date}." if runner.runner_goals[0].race_training else ""
     weekly_sessions = runner.runner_goals[0].weekly_sessions
-    weight_training = "weight training" if runner.runner_goals[0].weight_training else "cross training"
+    # weight_training = "weight training" if runner.runner_goals[0].weight_training else "cross training"
 
     prompt_template = openai_prompt()
     prompt = prompt_template.format(
+        tomorrow = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d"),
         runner_age=runner_age,
         years_running=years_running,
         current_weekly_miles=current_weekly_miles,
+        beginning_weekly_miles = current_weekly_miles + 5,
+        goal_weekly_miles = current_weekly_miles + 20,
         five_k_record=five_k_record,
         ten_k_record=ten_k_record,
         half_marathon_record=half_marathon_record,
@@ -59,7 +61,7 @@ def generate_training_plan_prompt(runner):
         race=race,
         race_date=race_date,
         weekly_sessions=weekly_sessions,
-        weight_training=weight_training
+        # weight_training=weight_training
     )
 
     return prompt
@@ -67,24 +69,83 @@ def generate_training_plan_prompt(runner):
 #Function to generate openai training plan 
 def get_training_plan(runner):
     prompt = generate_training_plan_prompt(runner)
+    print(prompt)
 
-    response = openai.chat.completions.create(model="gpt-4o-mini",
-    messages=[
-        {"role": "system", "content": "You are a running expert and coach who creates personalized race training plans."},
-        {"role": "user", "content": prompt}
-    ],
-    max_tokens=2050)
+    # response = openai.chat.completions.create(model="gpt-4o-mini",
+    # messages=[
+    #     {"role": "system", "content": "You are a running expert and coach who creates personalized race training plans."},
+    #     {"role": "user", "content": prompt}
+    # ],
+    # max_tokens=2050)
 
-    return response.choices[0].message.content.strip()
+    # formatted_response = response.choices[0].message.content.strip()
 
-@app.route('/get-training-plan/<int:runner_id>', methods=['GET'])
-def fetch_training_plan(runner_id):
-    runner = Runner.query.get(runner_id)
+    # prefix = "```json"
+    # if formatted_response.startswith(prefix):
+    #     # Remove the prefix and any leading or trailing whitespace
+    #     formatted_response = formatted_response[len(prefix):].strip()
+    
+    # suffix = "```"
+    # if formatted_response.endswith(suffix):
+    #     # Remove the prefix and any leading or trailing whitespace
+    #     formatted_response = formatted_response[:(-1 * len(suffix))].strip()
+    
+
+    # return formatted_response
+    return """[
+    {"date": "2024-07-26", "total_miles": 6, "run_details": "Easy run to build base", "run_type": "Easy Run"},
+    {"date": "2024-07-27", "total_miles": 8, "run_details": "Tempo run at a sustained pace", "run_type": "Tempo Run"},
+    {"date": "2024-07-28", "total_miles": 10, "run_details": "Easy run with strides", "run_type": "Easy Run"},
+    {"date": "2024-07-29", "total_miles": 12, "run_details": "Hills training, repeat hill 4 times", "run_type": "Hills"},
+    {"date": "2024-07-30", "total_miles": 4, "run_details": "Recovery run", "run_type": "Easy Run"},
+    {"date": "2024-07-31", "total_miles": 14, "run_details": "Long run with a steady pace", "run_type": "Long Run"},
+    {"date": "2024-08-01", "total_miles": 0, "run_details": "Rest day", "run_type": "Rest Day"},
+    {"date": "2024-08-02", "total_miles": 7, "run_details": "Easy run to recover", "run_type": "Easy Run"},
+    {"date": "2024-08-03", "total_miles": 8, "run_details": "Intervals: 5x1000m with rest", "run_type": "Intervals"},
+    {"date": "2024-08-04", "total_miles": 10, "run_details": "Easy run with a few pickups", "run_type": "Easy Run"},
+    {"date": "2024-08-05", "total_miles": 12, "run_details": "Race pace running for 4 miles", "run_type": "Race Pace"},
+    {"date": "2024-08-06", "total_miles": 4, "run_details": "Recovery run", "run_type": "Easy Run"},
+    {"date": "2024-08-07", "total_miles": 16, "run_details": "Long run with some faster sections", "run_type": "Long Run"},
+    {"date": "2024-08-08", "total_miles": 0, "run_details": "Rest day", "run_type": "Rest Day"},
+    {"date": "2024-08-09", "total_miles": 7, "run_details": "Easy run with stretches", "run_type": "Easy Run"},
+    {"date": "2024-08-10", "total_miles": 8, "run_details": "Tempo run at a faster clip", "run_type": "Tempo Run"},
+    {"date": "2024-08-11", "total_miles": 10, "run_details": "Easy run, focus on form", "run_type": "Easy Run"},
+    {"date": "2024-08-12", "total_miles": 12, "run_details": "Hills with 5 repeats", "run_type": "Hills"},
+    {"date": "2024-08-13", "total_miles": 4, "run_details": "Recovery run", "run_type": "Easy Run"},
+    {"date": "2024-08-14", "total_miles": 18, "run_details": "Long run at a consistent pace", "run_type": "Long Run"},
+    {"date": "2024-08-15", "total_miles": 0, "run_details": "Rest day", "run_type": "Rest Day"},
+    {"date": "2024-08-16", "total_miles": 8, "run_details": "Easy run to keep legs fresh", "run_type": "Easy Run"},
+    {"date": "2024-08-17", "total_miles": 9, "run_details": "Intervals: 6x800m with rest", "run_type": "Intervals"},
+    {"date": "2024-08-18", "total_miles": 10, "run_details": "Easy run with short strides", "run_type": "Easy Run"},
+    {"date": "2024-08-19", "total_miles": 12, "run_details": "Race pace segments during the run", "run_type": "Race Pace"},
+    {"date": "2024-08-20", "total_miles": 4, "run_details": "Short, easy recovery run", "run_type": "Easy Run"},
+    {"date": "2024-08-21", "total_miles": 20, "run_details": "Long run at marathon effort", "run_type": "Long Run"},
+    {"date": "2024-08-22", "total_miles": 0, "run_details": "Rest day", "run_type": "Rest Day"},
+    {"date": "2024-08-23", "total_miles": 6, "run_details": "Easy run", "run_type": "Easy Run"},
+    {"date": "2024-08-24", "total_miles": 8, "run_details": "Tempo run, strong effort", "run_type": "Tempo Run"},
+    {"date": "2024-08-25", "total_miles": 10, "run_details": "Easy run with gentle hills", "run_type": "Easy Run"},
+    {"date": "2024-08-26", "total_miles": 12, "run_details": "Last intervals: 4x400m", "run_type": "Intervals"},
+    {"date": "2024-08-27", "total_miles": 4, "run_details": "Recovery run to stay loose", "run_type": "Easy Run"},
+    {"date": "2024-08-28", "total_miles": 18, "run_details": "Long run, easy pace", "run_type": "Long Run"},
+    {"date": "2024-08-29", "total_miles": 0, "run_details": "Rest day", "run_type": "Rest Day"},
+    {"date": "2024-08-30", "total_miles": 4, "run_details": "Shakeout run before the race", "run_type": "Easy Run"},
+    {"date": "2024-08-31", "total_miles": 26, "run_details": "Marathon race day", "run_type": "Long Run"}
+]"""
+
+@app.route('/get-training-plan/<int:id>', methods=['GET'])
+def fetch_training_plan(id):
+    runner = Runner.query.filter(Runner.id == id).first()
     if not runner:
         return jsonify({"error": "Runner not found"}), 404
 
     training_plan = get_training_plan(runner)
-    return jsonify({"training_plan": training_plan})
+    print(training_plan)
+
+    if add_runs_to_db(training_plan, id): 
+        return jsonify({"message": "Training plan added to database successfully."})
+    else:
+        return jsonify({"error": "Failed to add training plan to database."}), 500
+
 
 @app.route('/runs/<int:id>', methods=['GET'])
 def get_all_runs(id):
@@ -223,54 +284,77 @@ def dashboard():
 
 # -------------------------------------------------HELPER FUNCTIONS------------------------------------------------------------------------
 
-def training_plan_to_dict(json_data):
-        training_plan_dict = json_data.get("training_plan", "")
-        # Remove the leading '```python\n' and trailing '```'
-        training_plan_dict = training_plan_dict.lstrip("```pythonn").rstrip("```").strip()
-        return training_plan_dict
-        
-# Example usage:
-json_data = {
-    "training_plan": "```python\ntraining_plan = {\n    \"Intro\": \"Given your experience and goals, I'll structure a 16-week marathon training plan that culminates in your race on August 31, 2024. Starting mileage is 60 miles weekly, increasing progressively.\",\n    \"Weekly Schedule Overview\": {\n        \"Monday\": \"Easy Run\",\n        \"Tuesday\": \"Interval Training\",\n        \"Wednesday\": \"Easy Run + Weight Training\",\n        \"Thursday\": \"Tempo Run\",\n        \"Friday\": \"Easy Run or Rest\",\n        \"Saturday\": \"Long Run\",\n        \"Sunday\": \"Recovery Run + Weight Training\"\n    },\n    \"Weekly Mileage Breakdown\": {\n        \"Weeks 1-4\": \"Base building (60-65 miles)\",\n        \"Weeks 5-8\": \"Increasing intensity (65-70 miles)\",\n        \"Weeks 9-12\": \"Peak mileage (70-75 miles)\",\n        \"Weeks 13-15\": \"Tapering and recovery (60-50 miles)\",\n        \"Week 16\": \"Race Week\"\n    },\n    \"Detailed Weekly Training Plan\": {\n        \"Weeks 1-4\": [\n            {\"Date\": \"05-27-2024\", \"Type\": \"Easy Run\", \"Details\": \"Easy Run\", \"Miles\": 6},\n            {\"Date\": \"05-28-2024\", \"Type\": \"Intervals\", \"Details\": \"8 miles with 3x800m (w/ 400m jog recovery)\", \"Miles\": 8},\n            {\"Date\": \"05-29-2024\", \"Type\": \"Easy Run\", \"Details\": \"Easy Run - 6 miles + Weight Training\", \"Miles\": 6},\n            {\"Date\": \"05-30-2024\", \"Type\": \"Tempo Run\", \"Details\": \"6 miles (2 miles easy, 2 miles at marathon pace, 2 miles easy)\", \"Miles\": 6},\n            {\"Date\": \"05-31-2024\", \"Type\": \"Easy Run\", \"Details\": \"Easy Run or Rest\", \"Miles\": 4},\n            {\"Date\": \"06-01-2024\", \"Type\": \"Long Run\", \"Details\": \"16 miles at a comfortable pace\", \"Miles\": 16},\n            {\"Date\": \"06-02-2024\", \"Type\": \"Recovery Run\", \"Details\": \"4 miles + Weight Training\", \"Miles\": 4}\n        ],\n        \"Weeks 5-8\": [\n            {\"Date\": \"06-03-2024\", \"Type\": \"Easy Run\", \"Details\": \"6 miles\", \"Miles\": 6},\n            {\"Date\": \"06-04-2024\", \"Type\": \"Intervals\", \"Details\": \"8 miles with 4x1200m (w/ 400m jog recovery)\", \"Miles\": 8},\n            {\"Date\": \"06-05-2024\", \"Type\": \"Easy Run\", \"Details\": \"6 miles + Weight Training\", \"Miles\": 6},\n            {\"Date\": \"06-06-2024\", \"Type\": \"Tempo Run\", \"Details\": \"7 miles (2 miles easy, 3 miles at half marathon pace, 2 miles easy)\", \"Miles\": 7},\n            {\"Date\": \"06-07-2024\", \"Type\": \"Easy Run\", \"Details\": \"5 miles\", \"Miles\": 5},\n            {\"Date\": \"06-08-2024\", \"Type\": \"Long Run\", \"Details\": \"18 miles at a comfortable pace\", \"Miles\": 18},\n            {\"Date\": \"06-09-2024\", \"Type\": \"Recovery Run\", \"Details\": \"5 miles + Weight Training\", \"Miles\": 5}\n        ],\n        \"Weeks 9-12\": [\n            {\"Date\": \"06-10-2024\", \"Type\": \"Easy Run\", \"Details\": \"6 miles\", \"Miles\": 6},\n            {\"Date\": \"06-11-2024\", \"Type\": \"Intervals\", \"Details\": \"9 miles with 5x1000m (w/ 400m jog recovery)\", \"Miles\": 9},\n            {\"Date\": \"06-12-2024\", \"Type\": \"Easy Run\", \"Details\": \"6 miles + Weight Training\", \"Miles\": 6},\n            {\"Date\": \"06-13-2024\", \"Type\": \"Tempo Run\", \"Details\": \"8 miles (2 miles easy, 4 miles at marathon pace, 2 miles easy)\", \"Miles\": 8},\n            {\"Date\": \"06-14-2024\", \"Type\": \"Easy Run\", \"Details\": \"6 miles\", \"Miles\": 6},\n            {\"Date\": \"06-15-2024\", \"Type\": \"Long Run\", \"Details\": \"20 miles at a comfortable pace\", \"Miles\": 20},\n            {\"Date\": \"06-16-2024\", \"Type\": \"Recovery Run\", \"Details\": \"6 miles + Weight Training\", \"Miles\": 6}\n        ],\n        \"Weeks 13-15\": [\n            {\"Date\": \"06-17-2024\", \"Type\": \"Easy Run\", \"Details\": \"6 miles\", \"Miles\": 6},\n            {\"Date\": \"06-18-2024\", \"Type\": \"Intervals\", \"Details\": \"8 miles with 3x1600m (w/ 400m jog recovery)\", \"Miles\": 8},\n            {\"Date\": \"06-19-2024\", \"Type\": \"Easy Run\", \"Details\": \"6 miles + Weight Training\", \"Miles\": 6},\n            {\"Date\": \"06-20-2024\", \"Type\": \"Tempo Run\", \"Details\": \"7 miles (2 miles easy, 3 miles at marathon pace, 2 miles easy)\", \"Miles\": 7},\n            {\"Date\": \"06-21-2024\", \"Type\": \"Easy Run\", \"Details\": \"4 miles\", \"Miles\": 4},\n            {\"Date\": \"06-22-2024\", \"Type\": \"Long Run\", \"Details\": \"22 miles at a comfortable pace\", \"Miles\": 22},\n            {\"Date\": \"06-23-2024\", \"Type\": \"Recovery Run\", \"Details\": \"4 miles + Weight Training\", \"Miles\": 4}\n        ],\n        \"Week 16\": [\n            {\"Date\": \"08-26-2024\", \"Type\": \"Easy Run\", \"Details\": \"4 miles\", \"Miles\": 4},\n            {\"Date\": \"08-27-2024\", \"Type\": \"Intervals\", \"Details\": \"4 miles with 4x200m (w/ 200m jog recovery)\", \"Miles\": 4},\n            {\"Date\": \"08-28-2024\", \"Type\": \"Easy Run\", \"Details\": \"3 miles + Stretching\", \"Miles\": 3},\n            {\"Date\": \"08-29-2024\", \"Type\": \"Rest\", \"Details\": \"Rest and hydration\", \"Miles\": 0},\n            {\"Date\": \"08-30-2024\", \"Type\": \"Rest\", \"Details\": \"Rest and prepare for race day\", \"Miles\": 0},\n            {\"Date\": \"08-31-2024\", \"Type\": \"Race Day\", \"Details\": \"Marathon!\", \"Miles\": 26.2}\n        ]\n    },\n    \"Notes\": {\n        \"Tempo Runs\": \"Run at a pace that is comfortably hard, typically about 20-30 seconds per mile slower than your 5K pace. Warm up with easy running for about 10-15 minutes, run the tempo segment, and then cool down.\",\n        \"Intervals\": \"Short bursts of speed work aimed at increasing your anaerobic threshold. Example: for 800m intervals, aim to run each at 5K pace or slightly faster with equal time for recovery jogging.\",\n        \"Long Runs\": \"These runs build endurance. Aim for a pace that allows you to carry on a conversation. Increase distance gradually, peaking at 20-22 miles.\",\n        \"Weight Training\": \"Incorporate full-body workouts focusing on core strength, legs, and upper body. Aim for 2-3 sessions per week, consisting of compound movements like squats, deadlifts, and presses.\"\n    }\n}\n```"
-}
-test_ai_response = training_plan_to_dict(json_data)
-# print(test_ai_response)
-
-def add_training_plan_to_database(training_plan, runner_id):
-    try:
-        # Save PlanOverview information
-        plan_overview = PlanOverview(
-            runner_id=runner_id,
-            plan_intro=training_plan.get("Intro"),
-            weekly_schedule=str(training_plan.get("Weekly Schedule Overview")),
-            weekly_mileage=str(training_plan.get("Weekly Mileage Breakdown")),
-            notes=str(training_plan.get("Notes"))
-        )
-        db.session.add(plan_overview)
+def add_runs_to_db(json_response, runner_id):
+    try: 
+        runs_data = json.loads(json_response)
+        for run in runs_data:
+            # Convert 'date' to a datetime.date object
+            run_date = datetime.strptime(run['date'], '%Y-%m-%d').date()
+            # Create a new Runs object
+            new_run = Runs(
+                runner_id=runner_id,  # Set this according to your application logic
+                run_type=run['run_type'],
+                run_details=run['run_details'],
+                is_complete=False,
+                date=run_date,
+                total_miles=run['total_miles']
+            )
+        # Add the new run to the session
+            db.session.add(new_run)
+        # Commit the transaction
         db.session.commit()
-
-        # Save Detailed Weekly Training Plan information
-        detailed_plan = training_plan.get("Detailed Weekly Training Plan")
-        for week, runs in detailed_plan.items():
-            for run in runs:
-                new_run = Runs(
-                    runner_id=runner_id,
-                    run_type=run["Type"],
-                    run_details=run["Details"],
-                    is_complete=False,  # Assuming initially not complete
-                    date=datetime.strptime(run["Date"], "%m-%d-%Y").date(),
-                    total_miles=run["Miles"]
-                )
-                db.session.add(new_run)
-        
-        db.session.commit()
+        print("Runs successfully added to database")
         return True
+
     except Exception as e:
         db.session.rollback()
-        print(f"Error adding training plan to database: {str(e)}")
-        return False
+        print("Error adding runs to database:", e)
 
-# add_training_plan_to_database(test_ai_response, 3)
+# Example 
+json_response = '''
+[
+    {
+        "date": "2024-07-29",
+        "run_type": "Easy Run",
+        "run_details": "Run at a slow, conversational pace",
+        "total_miles": 6
+    },
+    {
+        "date": "2024-07-30",
+        "run_type": "Tempo Run",
+        "run_details": "6 miles (2 miles easy, 2 miles at marathon pace, 2 miles easy)",
+        "total_miles": 6
+    },
+    {
+        "date": "2024-07-31",
+        "run_type": "Intervals",
+        "run_details": "8 miles with 3x800m (w/ 400m jog recovery)",
+        "total_miles": 8
+    },
+    {
+        "date": "2024-08-01",
+        "run_type": "Intervals",
+        "run_details": "8 miles with 3x800m (w/ 400m jog recovery)",
+        "total_miles": 8
+    },
+    {
+        "date": "2024-08-02",
+        "run_type": "Easy Run",
+        "run_details": "Easy Run - 6 miles + Weight Training",
+        "total_miles": 6
+    }
+]
+'''
+
+
+# @app.route('/add-runs-test/<int:id>', methods=['GET'])
+# def add_runs_test(id):
+#     try:
+#         add_runs_to_db(json_response, id)
+#     except Exception as e:
+#         print(e)
+#         return jsonify({"message": "Did not work!"}), 401
+#     return jsonify({"complete": {"response": json_response}})
 
 
 

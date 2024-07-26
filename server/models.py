@@ -17,7 +17,6 @@ class Runner(db.Model, SerializerMixin):
     current_conditioning = db.relationship('CurrentConditioning', back_populates='runner')
     personal_records = db.relationship('PersonalRecords', back_populates='runner')
     runner_goals = db.relationship('RunnerGoals', back_populates='runner')
-    plan_overview = db.relationship('PlanOverview', back_populates='runner')
 
     serialize_rules=['-runs.runner', '-current_conditioning.runner', '-personal_records.runner', 'runner_goals.runner', 'plan_overview.runner']
 
@@ -96,18 +95,18 @@ class Runs(db.Model, SerializerMixin):
       
 
 
-class PlanOverview(db.Model, SerializerMixin):
-     __tablename__ = 'plan_overview'
+# class PlanOverview(db.Model, SerializerMixin):
+#      __tablename__ = 'plan_overview'
 
-     id = db.Column(db.Integer, primary_key=True)
-     runner_id = db.Column(db.Integer, db.ForeignKey('runners.id'))
-     plan_intro = db.Column(db.String)
-     weekly_schedule = db.Column(db.String)
-     weekly_mileage = db.Column(db.String)
-     notes = db.Column(db.String)
+#      id = db.Column(db.Integer, primary_key=True)
+#      runner_id = db.Column(db.Integer, db.ForeignKey('runners.id'))
+#      plan_intro = db.Column(db.String)
+#      weekly_schedule = db.Column(db.String)
+#      weekly_mileage = db.Column(db.String)
+#      notes = db.Column(db.String)
 
-     runner = db.relationship('Runner', back_populates='plan_overview')
-     serialize_rules=['-runner.plan_overview']
+#      runner = db.relationship('Runner', back_populates='plan_overview')
+#      serialize_rules=['-runner.plan_overview']
 
-def __repr__(self):
-        return f'<Runner: {self.runner_id} >'
+# def __repr__(self):
+#         return f'<Runner: {self.runner_id} >'
