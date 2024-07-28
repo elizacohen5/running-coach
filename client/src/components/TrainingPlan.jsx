@@ -1,67 +1,121 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
+import { useState, useEffect } from "react";
+import { useUser } from "./UserContext";
+import Button from "@mui/material/Button";
 
-const columns = [
-  { field: "id", headerName: "ID", width: 90 },
-  {
-    field: "firstName",
-    headerName: "First name",
-    width: 150,
-    editable: true,
-  },
-  {
-    field: "lastName",
-    headerName: "Last name",
-    width: 150,
-    editable: true,
-  },
-  {
-    field: "age",
-    headerName: "Age",
-    type: "number",
-    width: 110,
-    editable: true,
-  },
-  {
-    field: "fullName",
-    headerName: "Full name",
-    description: "This column has a value getter and is not sortable.",
-    sortable: false,
-    width: 160,
-    valueGetter: (value, row) => `${row.firstName || ""} ${row.lastName || ""}`,
-  },
-];
-
-const rows = [
-  { id: 1, lastName: "Snow", firstName: "Jon", age: 14 },
-  { id: 2, lastName: "Lannister", firstName: "Cersei", age: 31 },
-  { id: 3, lastName: "Lannister", firstName: "Jaime", age: 31 },
-  { id: 4, lastName: "Stark", firstName: "Arya", age: 11 },
-  { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-  { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-  { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-  { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-  { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-  { id: 10, lastName: "Snow", firstName: "Jon", age: 14 },
-  { id: 11, lastName: "Lannister", firstName: "Cersei", age: 31 },
-  { id: 12, lastName: "Lannister", firstName: "Jaime", age: 31 },
-  { id: 13, lastName: "Stark", firstName: "Arya", age: 11 },
-  { id: 14, lastName: "Targaryen", firstName: "Daenerys", age: null },
-  { id: 15, lastName: "Melisandre", firstName: null, age: 150 },
-  { id: 16, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-  { id: 17, lastName: "Frances", firstName: "Rossini", age: 36 },
-  { id: 18, lastName: "Roxie", firstName: "Harvey", age: 65 },
-  { id: 19, lastName: "Lannister", firstName: "Jaime", age: 31 },
-  { id: 20, lastName: "Stark", firstName: "Arya", age: 11 },
-  { id: 21, lastName: "Targaryen", firstName: "Daenerys", age: null },
-  { id: 22, lastName: "Melisandre", firstName: null, age: 150 },
-  { id: 23, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-  { id: 24, lastName: "Frances", firstName: "Rossini", age: 36 },
-  { id: 25, lastName: "Roxie", firstName: "Harvey", age: 65 },
-];
 
 export default function TrainingPlan() {
+  const { user } = useUser();
+  const [runnerId, setRunnerId] = useState("");
+  const [userRuns, setUserRuns] = useState([]);
+
+  useEffect(() => {
+    if (user) {
+      setRunnerId(user.id);
+      console.log(user);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetch(`http://127.0.0.1:5555/runs/${user.id}`)
+        .then((r) => r.json())
+        .then((runsArray) => {
+          console.log("Runs fetched: ", runsArray);
+          setUserRuns(runsArray);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [user]); // re-fetch runs depending on the user state
+
+  if (!user) {
+    return <p>Loading...</p>;
+  }
+
+  const columns = [
+    { field: "id", headerName: "ID", width: 90 },
+    {
+      field: "run_type",
+      headerName: "Run Type",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "run_details",
+      headerName: "Details",
+      width: 450,
+      editable: true,
+    },
+    {
+      field: "run_date",
+      headerName: "Completion Date",
+      width: 250,
+      editable: true,
+    },
+    {
+      field: "total_miles",
+      headerName: "Total Miles",
+      type: "number",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "is_complete",
+      headerName: "Completed",
+      type: "boolean",
+      width: 200,
+      editable: true,
+      renderCell: (params) => {
+        const handleClick = () => {
+          const newIsComplete = !params.row.is_complete;
+  
+          // Update the database
+          fetch(`http://127.0.0.1:5555/runs/${params.row.id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ is_complete: newIsComplete }),
+          })
+            .then((response) => response.json())
+            .then((updatedRun) => {
+              // Update the local state to reflect the change
+              params.row.is_complete = updatedRun.is_complete;
+              setUserRuns((prevRuns) =>
+                prevRuns.map((run) =>
+                  run.id === updatedRun.id ? updatedRun : run
+                )
+              );
+            })
+            .catch((err) => console.log(err));
+        };
+        return (
+          <Button
+            variant="contained"
+            onClick={handleClick}
+            style={{
+              backgroundColor: params.value ? "green" : "yellow",
+              color: "black",
+            }}
+          >
+            {params.value ? "Complete" : "Incomplete"}
+          </Button>
+        );
+      },
+    },
+  ];
+
+  const rows = userRuns.map((run) => ({
+    id: run.id,
+    run_type: run.run_type,
+    run_details: run.run_details,
+    run_date: run.date,
+    total_miles: run.total_miles,
+    is_complete: run.is_complete,
+  }));
+
   return (
     <Box
       display="flex"
@@ -85,7 +139,6 @@ export default function TrainingPlan() {
           },
         }}
         pageSizeOptions={[50]}
-        checkboxSelection
         disableRowSelectionOnClick
         sx={{
           "& .MuiDataGrid-row": {
@@ -108,7 +161,7 @@ export default function TrainingPlan() {
           "& .MuiDataGrid-columnHeaderTitle": {
             backgroundColor: "lightblue",
             fontWeight: "bold",
-            fontSize: "1rem", 
+            fontSize: "1rem",
           },
           "& .MuiDataGrid-filler": {
             backgroundColor: "lightblue",

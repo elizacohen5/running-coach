@@ -5,6 +5,7 @@ import Signup from "./components/Signup"
 import NewPlan from "./components/CreatePlan/NewPlan"
 import TrainingPlan from "./components/TrainingPlan"
 import { Navigate } from "react-router-dom"
+import { UserProvider } from "./components/UserContext";
 
 
 const isAuthenticated = () => {
@@ -44,7 +45,7 @@ const routes = [
             },
             {
                 path: "/training-plan",
-                element: <TrainingPlan />
+                element: <UserProvider> <TrainingPlan /> </UserProvider>
             }
         ]
     }

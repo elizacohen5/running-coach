@@ -161,6 +161,23 @@ def get_all_runs(id):
         print(f"Error fetching runs: {str(e)}")
         return make_response(jsonify({'error': 'Failed to fetch runs'}), 500)
 
+@app.route('/runs/<int:id>', methods=['PATCH'])
+def update_run(id):
+    try:
+        run = Runs.query.filter(Runs.id == id).first()
+        if not run:
+            return make_response(jsonify({'error': 'Run not found'}), 404)
+        
+        data = request.get_json()
+        if 'is_complete' in data:
+            run.is_complete = data['is_complete']
+        
+        db.session.commit()
+        return make_response(jsonify(run.to_dict()), 200)
+    except Exception as e:
+        print(f"Error updating run: {str(e)}")
+        return make_response(jsonify({'error': 'Failed to update run'}), 500)
+
 
 @app.route('/login', methods=['POST'])
 def login():
