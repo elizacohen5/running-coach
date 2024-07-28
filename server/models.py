@@ -18,7 +18,7 @@ class Runner(db.Model, SerializerMixin):
     personal_records = db.relationship('PersonalRecords', back_populates='runner')
     runner_goals = db.relationship('RunnerGoals', back_populates='runner')
 
-    serialize_rules=['-runs.runner', '-current_conditioning.runner', '-personal_records.runner', 'runner_goals.runner', 'plan_overview.runner']
+    serialize_rules=['-runs.runner', '-current_conditioning.runner', '-personal_records.runner', 'runner_goals.runner']
 
 def __repr__(self):
         return f'<Runner {self.name}>'

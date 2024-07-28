@@ -56,7 +56,7 @@ export default function NextRun({ userRuns }) {
     // console.log("sorted runs: ", sortedRuns)
     const nextRun = sortedRuns[0];
     // console.log("next run: ", nextRun)
-    const nextRunPace = nextRun["pace"];
+    const nextRunPace = nextRun["run_type"];
     // console.log("next run pace: ", nextRunPace)
 
   return (
@@ -84,10 +84,13 @@ export default function NextRun({ userRuns }) {
               Next Run:
             </Typography>
             <Typography variant="body1" color="white">
-              Total Miles: {nextRun.distance}
+              Total Miles: {nextRun.total_miles}
             </Typography>
             <Typography variant="body1" color="white">
               Pace: {nextRunPace[0].toUpperCase() + nextRunPace.slice(1)}
+            </Typography>
+            <Typography variant="body1" color="white">
+              Details: {nextRun.run_details}
             </Typography>
           </CardContent>
         </CardActionArea>

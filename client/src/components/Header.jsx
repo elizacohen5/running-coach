@@ -36,6 +36,10 @@ function Header() {
     navigate("/home")
   }
 
+  const handleTrainingPlanClick = () => {
+    navigate("/training-plan")
+  }
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -100,7 +104,7 @@ function Header() {
               Dashboard
             </Button>
             <Button
-              // onClick={gonna want to nagivate to training plan}
+              onClick={handleTrainingPlanClick}
               sx={{ my: 2, color: "white", display: "block" }}
             >
               Training Plan

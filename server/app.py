@@ -151,6 +151,7 @@ def fetch_training_plan(id):
 def get_all_runs(id):
     try:
         runner = Runner.query.filter(Runner.id == id).first()
+        print(runner)
         runs = []
         for run in runner.runs:
             run_dict = run.to_dict()
