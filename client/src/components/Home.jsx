@@ -49,7 +49,7 @@ function Home() {
             <p>Welcome, {user.name} </p>
             <p>{message}</p>
             <Countdown user={user} />
-            <NextRun userRuns={userRuns} />
+            <NextRun userRuns={userRuns} setUserRuns={setUserRuns} user={user} />
         </>
     )
 }

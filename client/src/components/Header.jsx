@@ -42,17 +42,16 @@ function Header() {
 
   return (
     <AppBar position="static">
-      <Container maxWidth="xl">
+      <Container maxWidth="xl" sx={{ backgroundColor: "#1c1c1c" }}>
         <Toolbar disableGutters>
           <img
             className="runner-logo"
-            src="https://www.svgrepo.com/show/6247/sprint.svg"
+            src="https://cdn-icons-png.flaticon.com/512/233/233064.png"
           ></img>
           <Typography
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
             sx={{
               mr: 2,
               ml: 2,
@@ -73,7 +72,7 @@ function Header() {
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
-              color="inherit"
+              color="#ff8961"
             >
               <MenuIcon />
             </IconButton>

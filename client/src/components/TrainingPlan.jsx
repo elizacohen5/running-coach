@@ -1,34 +1,14 @@
-import * as React from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { DataGrid } from "@mui/x-data-grid";
-import { useState, useEffect } from "react";
-import { useUser } from "./UserContext";
 import Button from "@mui/material/Button";
+import { useUserRuns } from "./UserRunsContext";
+import { useUser } from "./UserContext";
 
 export default function TrainingPlan() {
+  const { userRuns, setUserRuns } = useUserRuns();
   const { user } = useUser();
-  const [runnerId, setRunnerId] = useState("");
-  const [userRuns, setUserRuns] = useState([]);
-
-  useEffect(() => {
-    if (user) {
-      setRunnerId(user.id);
-      console.log(user);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (user) {
-      fetch(`http://127.0.0.1:5555/runs/${user.id}`)
-        .then((r) => r.json())
-        .then((runsArray) => {
-          console.log("Runs fetched: ", runsArray);
-          setUserRuns(runsArray);
-        })
-        .catch((err) => console.log(err));
-    }
-  }, [user]); // re-fetch runs depending on the user state
 
   if (!user) {
     return <p>Loading...</p>;
@@ -96,11 +76,11 @@ export default function TrainingPlan() {
             variant="contained"
             onClick={handleClick}
             style={{
-              backgroundColor: params.value ? "green" : "yellow",
+              backgroundColor: params.value ? "#f78131" : "#8a8888",
               color: "black",
             }}
           >
-            {params.value ? "Complete" : "Incomplete"}
+            {params.value ? "Completed" : "Mark Complete"}
           </Button>
         );
       },
@@ -118,61 +98,61 @@ export default function TrainingPlan() {
 
   return (
     <>
-    <Typography variant="h4" gutterBottom ml={2} mt={3} color="black" textAlign="center">
-    {user.name}'s Training Plan
-  </Typography>
-    <Box
-      display="flex"
-      sx={{ border: "2px solid grey" }}
-      height={900}
-      my={3}
-      ml={1}
-      mr={1}
-      alignItems="center"
-      gap={4}
-      p={2}
-    >
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 30,
+      <Typography variant="h4" gutterBottom ml={2} mt={3} color="black" textAlign="center">
+        {user.name}'s Training Plan
+      </Typography>
+      <Box
+        display="flex"
+        sx={{ border: "2px solid grey" }}
+        height={900}
+        my={3}
+        ml={1}
+        mr={1}
+        alignItems="center"
+        gap={4}
+        p={2}
+      >
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 30,
+              },
             },
-          },
-        }}
-        pageSizeOptions={[30]}
-        disableRowSelectionOnClick
-        sx={{
-          "& .MuiDataGrid-row": {
-            backgroundColor: "white",
-            margin: "4px 0", // Adds space between rows
-            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)", // Adds a slight shadow for depth
-            borderRadius: "4px", // Optional: adds a slight rounding to the row corners
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: "lightblue",
-            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
-            margin: "4px 0",
-          },
-          "& .MuiDataGrid-columnHeadersInner": {
-            backgroundColor: "lightblue",
-          },
-          "& .MuiDataGrid-columnHeader": {
-            backgroundColor: "lightblue",
-          },
-          "& .MuiDataGrid-columnHeaderTitle": {
-            backgroundColor: "lightblue",
-            fontWeight: "bold",
-            fontSize: "1rem",
-          },
-          "& .MuiDataGrid-filler": {
-            backgroundColor: "lightblue",
-          },
-        }}
-      />
-    </Box>
+          }}
+          pageSizeOptions={[30]}
+          disableRowSelectionOnClick
+          sx={{
+            "& .MuiDataGrid-row": {
+              backgroundColor: "white",
+              margin: "4px 0", 
+              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)", 
+              borderRadius: "4px", 
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "#ff8961",
+              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
+              margin: "4px 0",
+            },
+            "& .MuiDataGrid-columnHeadersInner": {
+              backgroundColor: "#ff8961",
+            },
+            "& .MuiDataGrid-columnHeader": {
+              backgroundColor: "#ff8961",
+            },
+            "& .MuiDataGrid-columnHeaderTitle": {
+              backgroundColor: "#ff8961",
+              fontWeight: "bold",
+              fontSize: "1rem",
+            },
+            "& .MuiDataGrid-filler": {
+              backgroundColor: "#ff8961",
+            },
+          }}
+        />
+      </Box>
     </>
   );
 }
