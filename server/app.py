@@ -147,6 +147,21 @@ def fetch_training_plan(id):
         return jsonify({"error": "Failed to add training plan to database."}), 500
 
 
+@app.route('/goals/<int:id>', methods=['GET'])
+def get_goals(id):
+    try:
+        runner = Runner.query.filter(Runner.id == id).first()
+        print(runner)
+        goals = []
+        for goal in runner.runner_goals:
+            goal_dict = goal.to_dict()
+            goals.append(goal_dict)
+        return make_response(jsonify(goals), 200)
+    except Exception as e:
+        print(f"Error fetching goals: {str(e)}")
+        return make_response(jsonify({'error': 'Failed to fetch goals'}), 500)
+
+
 @app.route('/runs/<int:id>', methods=['GET'])
 def get_all_runs(id):
     try:

@@ -1,10 +1,10 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import { DataGrid } from "@mui/x-data-grid";
 import { useState, useEffect } from "react";
 import { useUser } from "./UserContext";
 import Button from "@mui/material/Button";
-
 
 export default function TrainingPlan() {
   const { user } = useUser();
@@ -65,12 +65,12 @@ export default function TrainingPlan() {
       field: "is_complete",
       headerName: "Completed",
       type: "boolean",
-      width: 200,
+      width: 300,
       editable: true,
       renderCell: (params) => {
         const handleClick = () => {
           const newIsComplete = !params.row.is_complete;
-  
+
           // Update the database
           fetch(`http://127.0.0.1:5555/runs/${params.row.id}`, {
             method: "PATCH",
@@ -117,6 +117,10 @@ export default function TrainingPlan() {
   }));
 
   return (
+    <>
+    <Typography variant="h4" gutterBottom ml={2} mt={3} color="black" textAlign="center">
+    {user.name}'s Training Plan
+  </Typography>
     <Box
       display="flex"
       sx={{ border: "2px solid grey" }}
@@ -134,11 +138,11 @@ export default function TrainingPlan() {
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 50,
+              pageSize: 30,
             },
           },
         }}
-        pageSizeOptions={[50]}
+        pageSizeOptions={[30]}
         disableRowSelectionOnClick
         sx={{
           "& .MuiDataGrid-row": {
@@ -169,5 +173,6 @@ export default function TrainingPlan() {
         }}
       />
     </Box>
+    </>
   );
 }
