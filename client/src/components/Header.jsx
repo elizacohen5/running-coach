@@ -42,7 +42,7 @@ function Header() {
 
   return (
     <AppBar position="static">
-      <Container maxWidth="xl" sx={{ backgroundColor: "#1c1c1c" }}>
+      <Container maxWidth="false" sx={{ backgroundColor: "#1c1c1c" }}>
         <Toolbar disableGutters>
           <img
             className="runner-logo"
