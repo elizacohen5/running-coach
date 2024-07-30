@@ -98,7 +98,7 @@ export default function TrainingPlan() {
 
   return (
     <>
-      <Typography variant="h4" gutterBottom ml={2} mt={3} color="black" textAlign="center">
+      <Typography variant="h4" gutterBottom ml={2} mt={3} color="black" textAlign="center" sx={{ fontWeight: "bold" }}>
         {user.name}'s Training Plan
       </Typography>
       <Box

@@ -94,19 +94,3 @@ class Runs(db.Model, SerializerMixin):
         return f'<Runner: {self.runner_id} Type: {self.run_type} Details: {self.run_details} Total Miles: {self.total_miles} Date: {self.date}>'
       
 
-
-# class PlanOverview(db.Model, SerializerMixin):
-#      __tablename__ = 'plan_overview'
-
-#      id = db.Column(db.Integer, primary_key=True)
-#      runner_id = db.Column(db.Integer, db.ForeignKey('runners.id'))
-#      plan_intro = db.Column(db.String)
-#      weekly_schedule = db.Column(db.String)
-#      weekly_mileage = db.Column(db.String)
-#      notes = db.Column(db.String)
-
-#      runner = db.relationship('Runner', back_populates='plan_overview')
-#      serialize_rules=['-runner.plan_overview']
-
-# def __repr__(self):
-#         return f'<Runner: {self.runner_id} >'

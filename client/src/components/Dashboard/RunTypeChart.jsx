@@ -3,7 +3,7 @@ import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
-import { useUserRuns } from "./UserRunsContext";
+import { useUserRuns } from "../UserRunsContext";
 
 const size = {
   width: 800,

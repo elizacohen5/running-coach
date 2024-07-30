@@ -45,7 +45,7 @@ export default function Countdown({ user }) {
         border: "2px solid #ffcc80",
         borderRadius: "10px",
         background: "linear-gradient(135deg, #ffcc80, #ff6f61)",
-        height: 150,
+        height: 110,
         my: 3,
         ml: 1,
         mr: 1,

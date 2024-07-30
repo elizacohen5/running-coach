@@ -1,7 +1,7 @@
 import App from "./App";
-import Home from "./components/Home";
-import Login from "./components/Login";
-import Signup from "./components/Signup";
+import Home from "./components/Dashboard/Home";
+import Login from "./components/Authentication/Login"
+import Signup from "./components/Authentication/Signup";
 import NewPlan from "./components/CreatePlan/NewPlan";
 import TrainingPlan from "./components/TrainingPlan";
 import { Navigate } from "react-router-dom";

@@ -5,7 +5,7 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { Button, CardActionArea, CardActions } from "@mui/material";
 import Box from "@mui/material/Box";
-import { useUserRuns } from "./UserRunsContext";
+import { useUserRuns } from "../UserRunsContext";
 
 export default function NextRun() {
   const { userRuns, setUserRuns } = useUserRuns();
