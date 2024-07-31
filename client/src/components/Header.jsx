@@ -13,11 +13,9 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 
-
 function Header() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigate = useNavigate();
-
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -33,38 +31,40 @@ function Header() {
   };
 
   const handleDashboardClick = () => {
-    navigate("/home")
-  }
+    navigate("/home");
+  };
 
   const handleTrainingPlanClick = () => {
-    navigate("/training-plan")
-  }
+    navigate("/training-plan");
+  };
 
   return (
     <AppBar position="static">
       <Container maxWidth="false" sx={{ backgroundColor: "#1c1c1c" }}>
         <Toolbar disableGutters>
-          <img
-            className="runner-logo"
-            src="https://cdn-icons-png.flaticon.com/512/233/233064.png"
-          ></img>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            sx={{
-              mr: 2,
-              ml: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            OptiRun
-          </Typography>
+          <Box onClick={handleDashboardClick} sx={{cursor: 'pointer'}} display={'flex'} alignItems={'center'}>
+            <img
+              className="runner-logo"
+              src="https://cdn-icons-png.flaticon.com/512/233/233064.png"
+            ></img>
+            <Typography
+              variant="h6"
+              noWrap
+              component="a"
+              sx={{
+                mr: 2,
+                ml: 2,
+                display: { xs: "none", md: "flex" },
+                fontFamily: "monospace",
+                fontWeight: 700,
+                letterSpacing: ".3rem",
+                color: "inherit",
+                textDecoration: "none",
+              }}
+            >
+              OptiRun
+            </Typography>
+          </Box>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton

@@ -7,7 +7,7 @@ import Countdown from "./Countdown";
 import NextRun from "./NextRun";
 import RunTypeChart from "./RunTypeChart";
 import MilesRunChart from "./MilesRunChart";
-
+import Weather from "./Weather";
 
 function Home() {
   const [user, setUser] = useState(null);
@@ -36,47 +36,100 @@ function Home() {
   }
 
   return (
-    <Box display="flex" flexWrap="wrap" justifyContent="center" alignItems="center" my={1}>
-      <Box display="flex" flexWrap="wrap" justifyContent="center" alignItems="center" my={1} width='98%'>
+    <Box
+      justifyContent="center"
+      alignItems="center"
+      sx={{ backgroundColor: "#5b5b5b" }}
+    >
+      <Box width={"100%"} py={2}>
         <Card
           sx={{
-            paddingTop: "1px",
-            paddingBottom: "1px",
-            paddingLeft: "30px",
-            paddingRight: "30px",
-            width: "100vw",
+            mx: 2,
+            paddingTop: "15px",
+            paddingBottom: "15px",
             backgroundColor: "#1c1c1c",
-            border: "1px solid #ff6f61",
+            border: "2px solid #ff6f61",
             borderRadius: "10px",
             boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
           }}
         >
-          <CardContent>
-            <Typography
-              variant="h5"
-              component="div"
-              color="white"
-              textAlign="center"
-              sx={{ fontWeight: "bold" }}
+          <Typography
+            variant="h5"
+            component="div"
+            color="white"
+            textAlign="center"
+            sx={{ fontWeight: "bold" }}
+          >
+            Welcome, {user.name}
+          </Typography>
+          <Countdown user={user} />
+          <Box
+            width={"100%"}
+            display={"flex"}
+            justifyContent={"center"}
+            pb={2}
+          >
+            <Box width={"50%"} mx={4}>
+              <NextRun />
+            </Box>
+            <Box
+              sx={{
+                width: "50%",
+                backgroundColor: "#1c1c1c",
+                // border: "2px solid #ff6f61",
+                borderRadius: "10px",
+                boxShadow: "0 4px 10px rgba(0, 0, 0, 1)",
+                p: 2,
+                mr: 4,
+              }}
             >
-              Welcome, {user.name}
-            </Typography>
-          </CardContent>
+              <Weather />
+            </Box>
+          </Box>
         </Card>
       </Box>
-      <Box display="flex" flexWrap="wrap" justifyContent="center" gap={1}>
-        <Box sx={{ width: '75%' }}>
-          <Countdown user={user} />
-        </Box>
-        <Box sx={{ width: '75%' }}>
-          <NextRun />
-        </Box>
-        <Box sx={{ width: { xs: '100%', sm: 'calc(100% - 8px)' } }}>
-          <RunTypeChart />
-        </Box>
-        <Box sx={{ width: { xs: '100%', sm: 'calc(100% - 8px)' } }}>
-          <MilesRunChart />
-        </Box>
+
+      <Box width={"100%"}>
+        <Card
+          sx={{
+            mx: 2,
+            paddingTop: "15px",
+            paddingBottom: "15px",
+            backgroundColor: "#1c1c1c",
+            border: "2px solid #ff6f61",
+            borderRadius: "10px",
+            boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
+          }}
+        >
+          <Box
+            display={"flex"}
+            justifyContent={"space-between"}
+            flexDirection={{ xs: "column", lg: "row" }}
+          >
+            <Box
+              width={{ xs: "100%", lg: "50%" }}
+              sx={{
+                boxShadow: "0 4px 10px rgba(0, 0, 0, 1)",
+                borderRadius: "10px",
+              }}
+              mx={4}
+              mt={2}
+            >
+              <RunTypeChart />
+            </Box>
+            <Box
+              width={{ xs: "100%", lg: "50%" }}
+              sx={{
+                boxShadow: "0 4px 10px rgba(0, 0, 0, 1)",
+                borderRadius: "10px",
+              }}
+              mt={2}
+              mr={4}
+            >
+              <MilesRunChart />
+            </Box>
+          </Box>
+        </Card>
       </Box>
     </Box>
   );

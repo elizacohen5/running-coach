@@ -41,18 +41,15 @@ export default function Countdown({ user }) {
   return (
     <Box
       display="flex"
+      justifyContent={'center'}
       sx={{
-        border: "2px solid #ffcc80",
         borderRadius: "10px",
         background: "linear-gradient(135deg, #ffcc80, #ff6f61)",
-        height: 110,
         my: 3,
-        ml: 1,
-        mr: 1,
+        mx: 4,
         alignItems: "center",
-        gap: 4,
-        p: 2,
-        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+        gap: 1,
+        boxShadow: "0 4px 10px rgba(0, 0, 0, 1)",
       }}
     >
       <Box
@@ -61,8 +58,8 @@ export default function Countdown({ user }) {
           flexWrap: "wrap",
           "& > :not(style)": {
             m: 1,
-            width: 100,
-            height: 100,
+            width: 60,
+            height: 60,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -82,14 +79,14 @@ export default function Countdown({ user }) {
         <Paper elevation={3}>{daysUntilRace}</Paper>
       </Box>
       <Typography
-        variant="h4"
+        variant="h5"
         sx={{
           color: "#fff",
           fontWeight: "bold",
           textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
         }}
       >
-        Days Until the {raceType}!
+        days until the {raceType}!
       </Typography>
     </Box>
   );

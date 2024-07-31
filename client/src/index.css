@@ -57,3 +57,67 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.main{
+  margin-bottom: 20px;
+  margin-top: 20px;
+  border-radius: 20px;
+  background-color: #1c1c1c;
+}
+
+.header{
+  text-align: center;
+  color: whitesmoke;
+  font-size: 20px;
+  padding-left: 15px;
+  border-radius: 20px 20px 0 0;
+  font-weight: bolder;
+}
+
+.day{
+  padding: 15px;
+  color: whitesmoke;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.status {
+  display: flex;
+}
+
+.temp{
+  padding: 15px;
+  color: whitesmoke;
+  font-size: 18px;
+}
+
+.first-flex{
+  display: flex;
+  justify-content: space-around;
+}
+
+.flex{
+  display: flex;
+  justify-content: space-around;
+}
+
+
+.sunrise-sunset{
+  padding: 15px;
+  color: whitesmoke;
+  font-size: 18px;
+}
+
+.description{
+  padding: 15px;
+  color: whitesmoke;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.weather-icon {
+  width: 70px;
+  height: 70px;
+  margin-right: 10px;
+}
+
+

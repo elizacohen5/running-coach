@@ -11,59 +11,12 @@ export default function NextRun() {
   const { userRuns, setUserRuns } = useUserRuns();
   const [buttonClicked, setButtonClicked] = useState(false);
 
-  if (!userRuns || userRuns.length === 0) {
-    return (
-      <Box display="flex" justifyContent="center" my={3}>
-        <Card
-          sx={{
-            width: "90vw",
-            backgroundColor: "#1c1c1c",
-            border: "2px solid #ff6f61",
-            borderRadius: "10px",
-            boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
-          }}
-        >
-          <CardActionArea>
-            <CardMedia
-              component="img"
-              height="140"
-              image="https://static.vecteezy.com/system/resources/previews/012/990/487/non_2x/new-york-city-map-illustration-vector.jpg"
-              alt="Next run"
-            />
-            <CardContent>
-              <Typography
-                gutterBottom
-                variant="h5"
-                component="div"
-                color="white"
-                sx={{ fontWeight: "bold" }}
-              >
-                Next Run:
-              </Typography>
-              <Typography variant="body1" color="white">
-                Total Miles: Create training plan to start logging miles
-              </Typography>
-              <Typography variant="body1" color="white">
-                Pace: None yet!
-              </Typography>
-            </CardContent>
-          </CardActionArea>
-          <CardActions>
-            <Button size="large" variant="contained" color="primary" fullWidth>
-              Create Training Plan
-            </Button>
-          </CardActions>
-        </Card>
-      </Box>
-    );
-  }
-
   const sortedRuns = userRuns.sort(
     (a, b) => new Date(a.run_date) - new Date(b.run_date)
   );
   const nextRun = sortedRuns[0];
-  const nextRunPace = nextRun["run_type"];
-  
+  const nextRunPace = nextRun?.run_type;
+
   const handleButtonClick = () => {
     const newIsComplete = !nextRun.is_complete;
 
@@ -85,57 +38,56 @@ export default function NextRun() {
   };
 
   return (
-    <Box display="flex" justifyContent="center" my={3}>
+    <Box display="flex" justifyContent="center" height={"100%"}>
       <Card
         sx={{
-          width: "90vw",
+          width: "100%",
           backgroundColor: "#1c1c1c",
-          border: "2px solid #ffcc80",
+          // border: "2px solid #ff6f61",
           borderRadius: "10px",
-          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
+          boxShadow: "0 4px 10px rgba(0, 0, 0, 1)",
         }}
       >
-        <CardActionArea>
-          <CardMedia
-            component="img"
-            height="140"
-            image="https://static.vecteezy.com/system/resources/previews/012/990/487/non_2x/new-york-city-map-illustration-vector.jpg"
-            alt="Next run"
-          />
-          <CardContent>
-            <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              color="white"
-              sx={{ fontWeight: "bold" }}
-            >
-              Next Run:
-            </Typography>
-            <Typography variant="body1" color="white">
-              Total Miles: {nextRun.total_miles}
-            </Typography>
-            <Typography variant="body1" color="white">
-              Pace: {nextRunPace[0].toUpperCase() + nextRunPace.slice(1)}
-            </Typography>
-            <Typography variant="body1" color="white">
-              Details: {nextRun.run_details}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-        <CardActions>
+        <CardMedia
+          component="img"
+          height="140"
+          image="https://static.vecteezy.com/system/resources/previews/012/990/487/non_2x/new-york-city-map-illustration-vector.jpg"
+          alt="Next run"
+        />
+        <CardContent>
+          <Typography
+            gutterBottom
+            variant="h5"
+            component="div"
+            color="white"
+            sx={{ fontWeight: "bold" }}
+          >
+            Next Run:
+          </Typography>
+          <Typography variant="body1" color="white">
+            Total Miles: {nextRun?.total_miles || 0}
+          </Typography>
+          <Typography variant="body1" color="white">
+            Pace: {nextRunPace?.[0].toUpperCase() + nextRunPace?.slice(1)}
+          </Typography>
+          <Typography variant="body1" color="white">
+            Details: {nextRun?.run_details}
+          </Typography>
+        </CardContent>
+        <CardActions sx={{pl: 2}}>
           <Button
             variant="contained"
             sx={{
-              width: "20vw",
-              backgroundColor: nextRun.is_complete ? "orange" : "primary.main",
+              backgroundColor: nextRun?.is_complete ? "orange" : "primary.main",
               "&:hover": {
-                backgroundColor: nextRun.is_complete ? "darkorange" : "primary.dark",
+                backgroundColor: nextRun?.is_complete
+                  ? "darkorange"
+                  : "primary.dark",
               },
             }}
             onClick={handleButtonClick}
           >
-            {nextRun.is_complete ? "Run Complete!" : "Mark Complete"}
+            {nextRun?.is_complete ? "Run Complete!" : "Mark Complete"}
           </Button>
         </CardActions>
       </Card>
