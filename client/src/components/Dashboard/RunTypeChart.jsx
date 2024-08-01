@@ -11,8 +11,12 @@ const size = {
 
 export default function RunTypeChart() {
   const { userRuns } = useUserRuns();
+  console.log(userRuns)
 
-  const completedRuns = userRuns.filter((run) => run.is_complete);
+  const activeRuns = userRuns.filter((run) => {
+    return run.run_type !== "Rest Day"
+  })
+  const completedRuns = activeRuns.filter((run) => run.is_complete);
 
   // Process the userRuns data to calculate total miles for each run type
   const runTypeMiles = completedRuns.reduce((acc, run) => {

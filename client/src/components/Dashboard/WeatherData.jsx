@@ -3,6 +3,7 @@ import "../../index.css";
 import moment from "moment";
 
 const WeatherData = ({ weatherData }) => {
+  console.log(weatherData)
   const iconUrl = `${import.meta.env.VITE_REACT_APP_ICON_URL}/${
     weatherData.weather[0].icon
   }.png`;
@@ -21,7 +22,7 @@ const WeatherData = ({ weatherData }) => {
       </div>
 
       <div className="flex">
-        <p className="temp">Temperature: {weatherData.main.temp} &deg;C</p>
+        <p className="temp">Temperature: {((weatherData.main.temp)* (9/5) + 32).toFixed(1)} &deg;F</p>
         <p className="temp">Humidity: {weatherData.main.humidity} %</p>
       </div>
 
