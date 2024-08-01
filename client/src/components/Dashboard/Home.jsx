@@ -54,7 +54,7 @@ function Home() {
           }}
         >
           <Typography
-            variant="h5"
+            variant="h3"
             component="div"
             color="white"
             textAlign="center"

@@ -41,25 +41,57 @@ function PersonalRecordsForm({ onFormDataChange }) {
     >
       <TextField
         label="What is your 5k record (minutes)?"
-        sx={{ width: "75%", backgroundColor: "white", ml: 20 }}
+        sx={{
+          width: "75%",
+          backgroundColor: "white",
+          ml: 15,
+          borderRadius: "10px",
+        }}
+        InputLabelProps={{
+          style: { backgroundColor: 'white' },
+        }}
         value={fivekRecord}
         onChange={(e) => setFivekRecord(e.target.value)}
       />
       <TextField
         label="What is your 10k record (minutes)?"
-        sx={{ width: "75%", backgroundColor: "white", ml: 20 }}
+        sx={{
+          width: "75%",
+          backgroundColor: "white",
+          ml: 15,
+          borderRadius: "10px",
+        }}
+        InputLabelProps={{
+          style: { backgroundColor: 'white' },
+        }}
         value={tenkRecord}
         onChange={(e) => setTenkRecord(e.target.value)}
       />
       <TextField
         label="What is your half marathon record (minutes)?"
-        sx={{ width: "75%", backgroundColor: "white", ml: 20 }}
+        sx={{
+          width: "75%",
+          backgroundColor: "white",
+          ml: 15,
+          borderRadius: "10px",
+        }}
+        InputLabelProps={{
+          style: { backgroundColor: 'white' },
+        }}
         value={halfMarathonRecord}
         onChange={(e) => setHalfMarathonRecord(e.target.value)}
       />
       <TextField
         label="What is your marathon record (minutes)?"
-        sx={{ width: "75%", backgroundColor: "white", ml: 20 }}
+        sx={{
+          width: "75%",
+          backgroundColor: "white",
+          ml: 15,
+          borderRadius: "10px",
+        }}
+        InputLabelProps={{
+          style: { backgroundColor: 'white' },
+        }}
         value={marathonRecord}
         onChange={(e) => setMarathonRecord(e.target.value)}
       />

@@ -55,19 +55,15 @@ function GoalsForm({ onFormDataChange }) {
   ]);
 
   const handleRaceTrainingChange = () => {
+    if (raceTraining || baseBuilding)
+      setBaseBuilding((prev) => !prev);
     setRaceTraining((prev) => !prev);
   };
 
   const handleBaseBuildingChange = () => {
+    if (raceTraining || baseBuilding)
+      setRaceTraining((prev) => !prev);
     setBaseBuilding((prev) => !prev);
-  };
-
-  const handleWeightTrainingChange = () => {
-    setWeightTraining((prev) => !prev);
-  };
-
-  const handleCrossTrainingChange = () => {
-    setCrossTraining((prev) => !prev);
   };
 
   const handleRaceDateChange = (e) => {
@@ -83,21 +79,21 @@ function GoalsForm({ onFormDataChange }) {
       component="form"
       sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 5 }}
     >
-      <Typography fontWeight="bold" color="black">
+      <Typography fontWeight="bold" color="lightgrey" ml={15}>
         Do you want to:
       </Typography>
       <RadioGroup>
         <FormControlLabel
-          sx={{ color: "black" }}
+          sx={{ color: "lightgrey", ml: 15 }}
           control={
-            <Radio checked={raceTraining} onChange={handleRaceTrainingChange} />
+            <Radio sx={{ color: "lightgrey" }} checked={raceTraining} onChange={handleRaceTrainingChange} />
           }
           label="Train for a race"
         />
         <FormControlLabel
-          sx={{ color: "black" }}
+          sx={{ color: "lightgrey", ml: 15 }}
           control={
-            <Radio checked={baseBuilding} onChange={handleBaseBuildingChange} />
+            <Radio sx={{ color: "lightgrey" }} checked={baseBuilding} onChange={handleBaseBuildingChange} />
           }
           label="Build a base"
         />
@@ -105,14 +101,14 @@ function GoalsForm({ onFormDataChange }) {
 
       {raceTraining && (
         <>
-          <Typography fontWeight="bold" color="black">
+          <Typography fontWeight="bold" color="lightgrey" ml={15}>
             Please select a race
           </Typography>
           <Select
             value={race}
             onChange={handleRaceChange}
             displayEmpty
-            sx={{ width: "75%", backgroundColor: "white" }}
+            sx={{ color: 'black', width: "75%", backgroundColor: "white", ml: 15, borderRadius: '10px' }}
           >
             <MenuItem value="">
               <em>None</em>
@@ -127,41 +123,37 @@ function GoalsForm({ onFormDataChange }) {
 
       <TextField
         label="How many miles would you like to run weekly?"
-        sx={{ width: "75%", backgroundColor: "white" }}
+        sx={{
+          ml: 15,
+          width: "75%",
+          backgroundColor: "white",
+          borderRadius: "10px",
+        }}
+        InputLabelProps={{
+          style: { backgroundColor: 'white' },
+        }}
         value={weeklyMileage}
         onChange={(e) => setWeeklyMileage(e.target.value)}
       />
       <TextField
         label="How many times per week would you like to run?"
-        sx={{ width: "75%", backgroundColor: "white" }}
+        sx={{
+          ml: 15,
+          width: "75%",
+          backgroundColor: "white",
+          borderRadius: "10px",
+        }}
+        InputLabelProps={{
+          style: { backgroundColor: 'white' },
+        }}
         value={weeklySessions}
         onChange={(e) => setWeeklySessions(e.target.value)}
       />
-      <FormControlLabel
-        sx={{ color: "black" }}
-        control={
-          <Checkbox
-            checked={weightTraining}
-            onChange={handleWeightTrainingChange}
-          />
-        }
-        label="Include weight training in plan"
-      />
-      <FormControlLabel
-        sx={{ color: "black" }}
-        control={
-          <Checkbox
-            checked={crossTraining}
-            onChange={handleCrossTrainingChange}
-          />
-        }
-        label="Include cross training in plan"
-      />
-      <Typography fontWeight="bold" color="black" sx={{ mt: 4 }}>
+      <Typography fontWeight="bold" color="lightgrey" sx={{ mt: 2, ml: 15 }}>
         If training for a race, when is the race?
       </Typography>
       <TextField
-        sx={{ width: "75%", backgroundColor: "white" }}
+        sx={{ width: "75%", backgroundColor: "white", borderRadius: '10px', ml: 15 }}
         type="date"
         InputLabelProps={{
           shrink: true,

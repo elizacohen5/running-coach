@@ -11,6 +11,7 @@ import PersonalRecordsForm from "./PersonalRecordsForm";
 import GoalsForm from "./GoalsForm";
 import { UserProvider, useUser } from "../UserContext"; // Ensure to import useUser
 import { useNavigate } from "react-router-dom";
+import Card from "@mui/material/Card";
 
 const steps = ["Current Conditioning", "Personal Records", "Goals"];
 
@@ -29,7 +30,10 @@ export default function NewPlan() {
 
   const handleNext = async () => {
     if (formData[steps[activeStep]]) {
-      await submitFormData(formData[steps[activeStep]], getUrlForStep(activeStep));
+      await submitFormData(
+        formData[steps[activeStep]],
+        getUrlForStep(activeStep)
+      );
     }
 
     let newSkipped = skipped;
@@ -50,18 +54,20 @@ export default function NewPlan() {
   };
 
   const fetchTrainingPlan = async () => {
-    console.log(user)
+    console.log(user);
     try {
-      const response = await fetch(`http://127.0.0.1:5555/get-training-plan/${user.id}`);
+      const response = await fetch(
+        `http://127.0.0.1:5555/get-training-plan/${user.id}`
+      );
       const result = await response.json();
-      console.log('Training plan fetched successfully:', result);
+      console.log("Training plan fetched successfully:", result);
       // Simulate a delay for the loading spinner
       setTimeout(() => {
         setLoading(false);
         setCompleted(true);
       }, 2000);
     } catch (error) {
-      console.error('Error fetching training plan:', error);
+      console.error("Error fetching training plan:", error);
       setLoading(false);
     }
   };
@@ -76,31 +82,31 @@ export default function NewPlan() {
   };
 
   const getUrlForStep = (step) => {
-    switch(step) {
+    switch (step) {
       case 0:
-        return 'http://127.0.0.1:5555/current_conditioning';
-      case 1: 
-        return 'http://127.0.0.1:5555/personal_records';
-      case 2: 
-        return 'http://127.0.0.1:5555/runner_goals';
+        return "http://127.0.0.1:5555/current_conditioning";
+      case 1:
+        return "http://127.0.0.1:5555/personal_records";
+      case 2:
+        return "http://127.0.0.1:5555/runner_goals";
       default:
-        return '';
+        return "";
     }
-  }
+  };
 
   const submitFormData = async (data, url) => {
     try {
       const response = await fetch(url, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       });
       const result = await response.json();
-      console.log('Form submitted successfully:', result);
+      console.log("Form submitted successfully:", result);
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error("Error submitting form:", error);
     }
   };
 
@@ -115,15 +121,21 @@ export default function NewPlan() {
     switch (step) {
       case 0:
         return (
-            <CurrentConditioningForm onFormDataChange={(data) => handleFormDataChange(step, data)} />
+          <CurrentConditioningForm
+            onFormDataChange={(data) => handleFormDataChange(step, data)}
+          />
         );
       case 1:
         return (
-            <PersonalRecordsForm onFormDataChange={(data) => handleFormDataChange(step, data)} />
+          <PersonalRecordsForm
+            onFormDataChange={(data) => handleFormDataChange(step, data)}
+          />
         );
       case 2:
         return (
-            <GoalsForm onFormDataChange={(data) => handleFormDataChange(step, data)} />
+          <GoalsForm
+            onFormDataChange={(data) => handleFormDataChange(step, data)}
+          />
         );
       default:
         return "Unknown step";
@@ -132,7 +144,13 @@ export default function NewPlan() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+        backgroundColor="#5b5b5b"
+      >
         <CircularProgress />
       </Box>
     );
@@ -140,11 +158,33 @@ export default function NewPlan() {
 
   if (completed) {
     return (
-      <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="100vh">
-        <Typography variant="h4" component="div" color="white" textAlign="center" sx={{ fontWeight: "bold", mb: 3 }}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+        backgroundColor="#5b5b5b"
+      >
+        <Typography
+          variant="h4"
+          component="div"
+          color="white"
+          textAlign="center"
+          sx={{ fontWeight: "bold", mb: 3 }}
+        >
           Training Plan Complete!
         </Typography>
-        <Button variant="contained" color="primary" onClick={() => navigate("/training-plan")}>
+        <Button
+          variant="contained"
+          sx={{
+            backgroundColor: "orange",
+            "&:hover": {
+              backgroundColor: "darkorange"
+            },
+          }}
+          onClick={() => navigate("/training-plan")}
+        >
           Go to Training Plan
         </Button>
       </Box>
@@ -153,52 +193,91 @@ export default function NewPlan() {
 
   return (
     <UserProvider>
-      <Box sx={{ width: "90%", mt: 3, ml: 10 }}>
-        <Stepper activeStep={activeStep}>
-          {steps.map((label, index) => {
-            const stepProps = {};
-            const labelProps = {};
-            if (isStepSkipped(index)) {
-              stepProps.completed = false;
-            }
-            return (
-              <Step key={label} {...stepProps}>
-                <StepLabel {...labelProps} sx={{ color: "white" }}>
-                  {label}
-                </StepLabel>
-              </Step>
-            );
-          })}
-        </Stepper>
-        {activeStep === steps.length ? (
-          <React.Fragment>
-            <Typography sx={{ mt: 2, mb: 1, color: "white" }}>
-              All steps completed - you&apos;re finished
-            </Typography>
-            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Box sx={{ flex: "1 1 auto" }} />
-              <Button onClick={handleReset}>Reset</Button>
-            </Box>
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            <Box sx={{ mt: 2, mb: 1 }}>{getStepContent(activeStep)}</Box>
-            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Button
-                color="inherit"
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                sx={{ mr: 1, color: "white" }}
-              >
-                Back
-              </Button>
-              <Box sx={{ flex: "1 1 auto" }} />
-              <Button onClick={handleNext}>
-                {activeStep === steps.length - 1 ? "Finish" : "Next"}
-              </Button>
-            </Box>
-          </React.Fragment>
-        )}
+      <Box sx={{ width: "100%", height: "100vw", backgroundColor: "#5b5b5b" }}>
+        <Box
+          component="form"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            backgroundColor: "#5b5b5b",
+          }}
+        >
+          <Card
+            sx={{
+              width: "100%",
+              m: 2,
+              paddingX: 8,
+              paddingY: 4,
+              backgroundColor: "#1c1c1c",
+              border: "2px solid #ff6f61",
+              borderRadius: "10px",
+              boxShadow: "0 4px 10px rgba(0, 0, 0, 1)",
+            }}
+          >
+            <Stepper activeStep={activeStep}>
+              {steps.map((label, index) => {
+                const stepProps = {};
+                const labelProps = {};
+                if (isStepSkipped(index)) {
+                  stepProps.completed = false;
+                }
+                return (
+                  <Step
+                    key={label}
+                    {...stepProps}
+                    sx={{
+                      "& .MuiStepLabel-root .Mui-completed": {
+                        color: "lightgreen", // circle color (COMPLETED)
+                      },
+                      "& .MuiStepLabel-root .Mui-active": {
+                        color: "white", // circle color (ACTIVE)
+                      },
+                      "& .MuiStepLabel-root .Mui-active .MuiStepIcon-text": {
+                        fill: "grey", // circle's number (ACTIVE)
+                      },
+                      "& .MuiStepLabel-label": {
+                        color: "lightgrey", // Default color for all steps
+                      },
+                    }}
+                  >
+                    <StepLabel {...labelProps} sx={{ color: "white" }}>
+                      {label}
+                    </StepLabel>
+                  </Step>
+                );
+              })}
+            </Stepper>
+            {activeStep === steps.length ? (
+              <React.Fragment>
+                <Typography sx={{ mt: 2, mb: 1, color: "white" }}>
+                  All steps completed - you&apos;re finished
+                </Typography>
+                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                  <Box sx={{ flex: "1 1 auto" }} />
+                  <Button onClick={handleReset}>Reset</Button>
+                </Box>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <Box sx={{ mt: 2, mb: 1 }}>{getStepContent(activeStep)}</Box>
+                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                  <Button
+                    color="inherit"
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    sx={{ mr: 1, color: "white" }}
+                  >
+                    Back
+                  </Button>
+                  <Box sx={{ flex: "1 1 auto" }} />
+                  <Button onClick={handleNext} sx={{ mr: 1, color: "white" }}>
+                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                  </Button>
+                </Box>
+              </React.Fragment>
+            )}
+          </Card>
+        </Box>
       </Box>
     </UserProvider>
   );

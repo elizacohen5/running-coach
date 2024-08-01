@@ -6,8 +6,10 @@ import Typography from "@mui/material/Typography";
 import { Button, CardActionArea, CardActions } from "@mui/material";
 import Box from "@mui/material/Box";
 import { useUserRuns } from "../UserRunsContext";
+import { useNavigate } from "react-router-dom";
 
 export default function NextRun() {
+  const navigate = useNavigate();
   const { userRuns, setUserRuns } = useUserRuns();
   const [buttonClicked, setButtonClicked] = useState(false);
 
@@ -64,31 +66,48 @@ export default function NextRun() {
           >
             Next Run:
           </Typography>
-          <Typography variant="body1" color="white">
-            Total Miles: {nextRun?.total_miles || 0}
-          </Typography>
-          <Typography variant="body1" color="white">
-            Pace: {nextRunPace?.[0].toUpperCase() + nextRunPace?.slice(1)}
-          </Typography>
-          <Typography variant="body1" color="white">
-            Details: {nextRun?.run_details}
-          </Typography>
+          {nextRun ? (
+            <>
+              <Typography variant="body1" color="white">
+                Total Miles: {nextRun?.total_miles || 0}
+              </Typography>
+              <Typography variant="body1" color="white">
+                Pace: {nextRunPace?.[0].toUpperCase() + nextRunPace?.slice(1)}
+              </Typography>
+              <Typography variant="body1" color="white">
+                Details: {nextRun?.run_details}
+              </Typography>
+            </>
+          ) : (
+            <Typography color={"lightgrey"}>
+              No runs yet! Create a training plan to get started.
+            </Typography>
+          )}
         </CardContent>
-        <CardActions sx={{pl: 2}}>
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: nextRun?.is_complete ? "orange" : "primary.main",
-              "&:hover": {
-                backgroundColor: nextRun?.is_complete
-                  ? "darkorange"
-                  : "primary.dark",
-              },
-            }}
-            onClick={handleButtonClick}
-          >
-            {nextRun?.is_complete ? "Run Complete!" : "Mark Complete"}
-          </Button>
+        <CardActions sx={{ pl: 2 }}>
+          {nextRun ? (
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: nextRun?.is_complete ? "#f78131" : "#8a8888",
+                color: "black",
+              }}
+              onClick={handleButtonClick}
+            >
+              {nextRun?.is_complete ? "Run Complete!" : "Mark Complete"}
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "orange",
+                "&:hover": {
+                  backgroundColor: "darkorange"
+                },
+              }}
+              onClick={() => navigate("/new-plan")}
+            >Create Training Plan</Button>
+          )}
         </CardActions>
       </Card>
     </Box>

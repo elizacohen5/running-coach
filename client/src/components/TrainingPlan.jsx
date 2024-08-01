@@ -1,5 +1,6 @@
 import React from "react";
 import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
@@ -19,33 +20,33 @@ export default function TrainingPlan() {
     {
       field: "run_type",
       headerName: "Run Type",
-      width: 200,
+      flex: 1,
       editable: true,
     },
     {
       field: "run_details",
       headerName: "Details",
-      width: 450,
+      flex: 1,
       editable: true,
     },
     {
       field: "run_date",
       headerName: "Completion Date",
-      width: 250,
+      flex: 1,
       editable: true,
     },
     {
       field: "total_miles",
       headerName: "Total Miles",
       type: "number",
-      width: 200,
+      flex: 1,
       editable: true,
     },
     {
       field: "is_complete",
       headerName: "Completed",
       type: "boolean",
-      width: 300,
+      flex: 2,
       editable: true,
       renderCell: (params) => {
         const handleClick = () => {
@@ -98,60 +99,76 @@ export default function TrainingPlan() {
 
   return (
     <>
-      <Typography variant="h4" gutterBottom ml={2} mt={3} color="black" textAlign="center" sx={{ fontWeight: "bold" }}>
-        {user.name}'s Training Plan
-      </Typography>
-      <Box
-        display="flex"
-        sx={{ border: "2px solid grey" }}
-        height={900}
-        my={3}
-        ml={1}
-        mr={1}
-        alignItems="center"
-        gap={4}
-        p={2}
-      >
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 30,
-              },
-            },
-          }}
-          pageSizeOptions={[30]}
-          disableRowSelectionOnClick
+      <Box sx={{ backgroundColor: "#5b5b5b", padding: "40px"}}>
+        <Card
+          display="flex"
+          alignItems="center"
           sx={{
-            "& .MuiDataGrid-row": {
-              backgroundColor: "white",
-              margin: "4px 0", 
-              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)", 
-              borderRadius: "4px", 
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: "#ff8961",
-              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
-              margin: "4px 0",
-            },
-            "& .MuiDataGrid-columnHeadersInner": {
-              backgroundColor: "#ff8961",
-            },
-            "& .MuiDataGrid-columnHeader": {
-              backgroundColor: "#ff8961",
-            },
-            "& .MuiDataGrid-columnHeaderTitle": {
-              backgroundColor: "#ff8961",
-              fontWeight: "bold",
-              fontSize: "1rem",
-            },
-            "& .MuiDataGrid-filler": {
-              backgroundColor: "#ff8961",
-            },
+            padding: "25px",
+            backgroundColor: "#1c1c1c",
+            border: "2px solid #ff6f61",
+            borderRadius: "10px",
+            boxShadow: "0 4px 10px rgba(0, 0, 0, 1)",
           }}
-        />
+        >
+          <Typography
+            variant="h4"
+            color="white"
+            textAlign="center"
+            sx={{ fontWeight: "bold" }}
+            gutterBottom="20px"
+          >
+            {user.name}'s Training Plan
+          </Typography>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            // autoHeight
+            disableExtendRowFullWidth
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 25,
+                },
+              },
+            }}
+            pageSizeOptions={[25]}
+            disableRowSelectionOnClick
+            sx={{
+              height: 'calc(100vh - 220px)',
+              "&.MuiDataGrid-root": {
+                border: "none",
+              },
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: "#1c1c1c",
+                boxShadow: "0 4px 10px rgba(0, 0, 0, 1)",
+                margin: "4px 0",
+              },
+              "& .MuiDataGrid-columnHeader": {
+                backgroundColor: "#1c1c1c",
+              },
+              "& .MuiDataGrid-columnHeaderTitle": {
+                color: "white",
+                fontWeight: "bold",
+                fontSize: "1.1rem",
+              },
+              "& .MuiDataGrid-row": {
+                backgroundColor: "#1c1c1c",
+                margin: "4px 0",
+                // boxShadow: "0 4px 10px rgba(0, 0, 0, 1)",
+                borderRadius: "4px",
+                color: "white",
+              },
+              "& .MuiDataGrid-footerContainer": {
+                // color: "white",
+                borderTop: "none",
+              },
+              "& .MuiTablePagination-root": {
+                color: "white", // Change pagination text color to white
+              },
+            }}
+          />
+        </Card>
       </Box>
     </>
   );

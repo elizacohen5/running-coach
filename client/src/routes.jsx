@@ -36,7 +36,7 @@ const routes = [
     children: [
       {
         path: "/home",
-        element: isAuthenticated() ? <Home /> : <Navigate to="/login" />,
+        element:  <Home />,
       },
       {
         path: "/signup",
