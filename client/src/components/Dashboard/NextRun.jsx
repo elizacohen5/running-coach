@@ -13,9 +13,11 @@ export default function NextRun() {
   const { userRuns, setUserRuns } = useUserRuns();
   const [buttonClicked, setButtonClicked] = useState(false);
 
-  const sortedRuns = userRuns.sort(
-    (a, b) => new Date(a.run_date) - new Date(b.run_date)
-  );
+  const sortedRuns = userRuns
+    .sort((a, b) => new Date(a.run_date) - new Date(b.run_date))
+    .filter((run) => {
+      return !run.is_complete;
+    });
   const nextRun = sortedRuns[0];
   const nextRunPace = nextRun?.run_type;
 
@@ -102,11 +104,13 @@ export default function NextRun() {
               sx={{
                 backgroundColor: "orange",
                 "&:hover": {
-                  backgroundColor: "darkorange"
+                  backgroundColor: "darkorange",
                 },
               }}
               onClick={() => navigate("/new-plan")}
-            >Create Training Plan</Button>
+            >
+              Create Training Plan
+            </Button>
           )}
         </CardActions>
       </Card>

@@ -160,6 +160,22 @@ def get_goals(id):
     except Exception as e:
         print(f"Error fetching goals: {str(e)}")
         return make_response(jsonify({'error': 'Failed to fetch goals'}), 500)
+    
+
+    
+@app.route('/records/<int:id>', methods=['GET'])
+def get_records(id):
+    try:
+        runner = Runner.query.filter(Runner.id == id).first()
+        print(runner)
+        records = []
+        for record in runner.personal_records:
+            record_dict = record.to_dict()
+            records.append(record_dict)
+        return make_response(jsonify(records), 200)
+    except Exception as e:
+        print({"message": f"Error fetching personal records: {str(e)}"})
+        return make_response(jsonify({'error': 'Failed to fetch personal records'}), 500)
 
 
 @app.route('/runs/<int:id>', methods=['GET'])

@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Countdown from "./Countdown";
 import NextRun from "./NextRun";
 import RunTypeChart from "./RunTypeChart";
 import MilesRunChart from "./MilesRunChart";
 import Weather from "./Weather";
+import RaceTimes from "./RaceTimes";
 
 function Home() {
   const [user, setUser] = useState(null);
@@ -63,12 +63,7 @@ function Home() {
             Welcome, {user.name}
           </Typography>
           <Countdown user={user} />
-          <Box
-            width={"100%"}
-            display={"flex"}
-            justifyContent={"center"}
-            pb={2}
-          >
+          <Box width={"100%"} display={"flex"} justifyContent={"center"} pb={2}>
             <Box width={"50%"} mx={4}>
               <NextRun />
             </Box>
@@ -76,7 +71,6 @@ function Home() {
               sx={{
                 width: "50%",
                 backgroundColor: "#1c1c1c",
-                // border: "2px solid #ff6f61",
                 borderRadius: "10px",
                 boxShadow: "0 4px 10px rgba(0, 0, 0, 1)",
                 p: 2,
@@ -131,6 +125,7 @@ function Home() {
           </Box>
         </Card>
       </Box>
+      <RaceTimes user={user} />
     </Box>
   );
 }
